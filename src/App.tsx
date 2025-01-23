@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import { useEffect, useState } from 'react';
 
 import Home from './pages/Home.page';
@@ -11,6 +11,8 @@ import CityList from './components/CityList';
 
 import { ICity } from './interface/city.interface';
 import CountryList from './components/CountryList';
+import City from './components/City';
+import Form from './components/Form';
 
 const CITIES_API_ENDPOINT = 'http://localhost:8000/cities';
 
@@ -43,20 +45,22 @@ function App() {
         <Route path="pricing" element={<Pricing />} />
         <Route path="login" element={<Login />} />
         <Route path="app" element={<AppLayout />}>
-          <Route
+          {/* <Route
             index
             element={<CityList cities={cities} isLoading={isLoading} />}
-          />
+          /> */}
+          <Route index element={<Navigate replace to="cities" />} />
           <Route
             index
             path="cities"
             element={<CityList cities={cities} isLoading={isLoading} />}
           />
+          <Route path="cities/:id" element={<City />} />
           <Route
             path="countries"
             element={<CountryList isLoading={isLoading} cities={cities} />}
           />
-          <Route path="form" element={<p>Form</p>} />
+          <Route path="form" element={<Form />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>

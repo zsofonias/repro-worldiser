@@ -34,13 +34,6 @@ function CountryList({ cities, isLoading }: ICountryListProps) {
   //   }
   // });
 
-  const countries = cities.reduce<ICountry[]>((acc, city) => {
-    if (!acc.some((c) => c.country === city.country)) {
-      acc.push({ country: city.country, emoji: city.emoji });
-    }
-    return acc;
-  }, []);
-
   // const countries = Array.from(
   //   cities
   //     .reduce((acc, city) => {
@@ -52,6 +45,13 @@ function CountryList({ cities, isLoading }: ICountryListProps) {
   //     .values()
   // );
 
+  const countries = cities.reduce<ICountry[]>((acc, city) => {
+    if (!acc.some((c) => c.country === city.country)) {
+      acc.push({ country: city.country, emoji: city.emoji });
+    }
+    return acc;
+  }, []);
+
   if (isLoading) return <Spinner />;
 
   if (!countries.length)
@@ -59,8 +59,8 @@ function CountryList({ cities, isLoading }: ICountryListProps) {
 
   return (
     <ul className={styles.countryList}>
-      {countries.map((country, idx) => (
-        <CountryItem key={idx} country={country} />
+      {countries.map((country) => (
+        <CountryItem key={country.country} country={country} />
       ))}
     </ul>
   );
