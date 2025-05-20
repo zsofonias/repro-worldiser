@@ -1,109 +1,100 @@
-import { useEffect, useState } from 'react';
-import { useLocation, useParams, useSearchParams } from 'react-router';
+import { useEffect } from 'react';
+import { Link, useLocation, useParams, useSearchParams } from 'react-router';
 
 import styles from './city.module.css';
 
 import Spinner from './UI/Spinner';
-import { ICity } from '../interface/city.interface';
 
 import { formatDate } from '../utils/helper-methods.utils';
-
-const CITIES_API_ENDPOINT = 'http://localhost:8000/cities';
+import Button from './UI/Button';
+import { useCitiesContext } from '../context/CitiesContext';
+import BackButton from './UI/BackButton';
 
 interface ICityRouteParams extends Record<string, string | undefined> {
-  id: string;
+  cityId: string;
 }
 
 function City() {
-  const [city, setCity] = useState<ICity>();
-  const [isLoading, setIsLoading] = useState(false);
+  const { cityId } = useParams<ICityRouteParams>();
 
-  const { id: cityId } = useParams<ICityRouteParams>();
+  if (!cityId) {
+    return (
+      <div className={styles.city}>
+        <h2>No city ID provided</h2>
+        <Link to="/app/cities">
+          <Button type="back">Back</Button>
+        </Link>
+      </div>
+    );
+  }
 
-  const [searchParams] = useSearchParams();
-  const lat = searchParams.get('lat');
-  const lng = searchParams.get('lng');
-
-  console.log(searchParams.get('lat'), searchParams.get('lng'));
-
-  const location = useLocation();
-  console.log('location: ', location);
-
-  // TEMP DATA
-  // const currentCity = {
-  //   cityName: 'Lisbon',
-  //   emoji: '🇵🇹',
-  //   date: '2027-10-31T15:59:59.138Z',
-  //   notes: 'My favorite city so far!',
-  // };
+  const {
+    getCity,
+    currentCity,
+    isCurrentCityLoading: isLoading,
+  } = useCitiesContext();
 
   useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchCity = () => {
-      setIsLoading(true);
-      fetch(`${CITIES_API_ENDPOINT}/${cityId}`)
-        .then((response) => response.json())
-        .then((data: ICity) => setCity(data))
-        .catch((err) => {
-          if (err.name !== 'AbortError') {
-            console.log(err);
-          }
-
-          // console.log(err)
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    };
-
-    fetchCity();
-
-    return () => {
-      controller.abort();
-    };
+    getCity(cityId);
   }, [cityId]);
 
-  const { cityName = '', emoji = '', date = '', notes = '' } = city || {};
+  // const [searchParams] = useSearchParams();
+  // console.log(searchParams.get('lat'), searchParams.get('lng'));
+
+  // const location = useLocation();
+  // console.log('location: ', location);
+
+  if (!currentCity)
+    return (
+      <div className={styles.city}>
+        <h2>City not found</h2>
+        <BackButton />
+      </div>
+    );
 
   return (
     <div className={styles.city}>
       {isLoading && <Spinner />}
-      {!isLoading && city && (
+      {!isLoading && currentCity && (
         <>
           <div className={styles.row}>
             <h6>City name</h6>
             <h3>
-              <span>{emoji}</span> {cityName}
+              <span>{currentCity.emoji}</span> {currentCity.cityName}
             </h3>
           </div>
 
           <div className={styles.row}>
-            <h6>You went to {cityName} on</h6>
-            <p>{formatDate(date)}</p>
+            <h6>You went to {currentCity.cityName} on</h6>
+            <p>{formatDate(currentCity.date)}</p>
           </div>
 
-          {notes && (
+          {currentCity.notes && (
             <div className={styles.row}>
               <h6>Your notes</h6>
-              <p>{notes}</p>
+              <p>{currentCity.notes}</p>
             </div>
           )}
 
           <div className={styles.row}>
             <h6>Learn more</h6>
             <a
-              href={`https://en.wikipedia.org/wiki/${cityName}`}
+              href={`https://en.wikipedia.org/wiki/${currentCity.cityName}`}
               target="_blank"
               rel="noreferrer"
             >
-              Check out {cityName} on Wikipedia &rarr;
+              Check out {currentCity.cityName} on Wikipedia &rarr;
             </a>
           </div>
         </>
       )}
 
-      <div>{/* <ButtonBack /> */}</div>
+      <div>
+        {/* <Link to="/app/cities">
+          <Button type="back">Back</Button>
+        </Link> */}
+        <BackButton />
+      </div>
     </div>
   );
 }

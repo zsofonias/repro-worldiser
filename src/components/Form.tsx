@@ -5,12 +5,13 @@ import { useNavigate } from 'react-router';
 
 import styles from './form.module.css';
 import Button from './UI/Button';
+import BackButton from './UI/BackButton';
 
 export function convertToEmoji(countryCode: string) {
   const codePoints = countryCode
     .toUpperCase()
     .split('')
-    .map((char) => 127397 + char.charCodeAt());
+    .map((char) => 127397 + char.charCodeAt(0));
   return String.fromCodePoint(...codePoints);
 }
 
@@ -61,7 +62,7 @@ function Form() {
         <Button type="primary">Add</Button>
 
         {/* <Button type="back" onClick={handleOnClickBack}> */}
-        <Button
+        {/* <Button
           type="back"
           onClick={(e) => {
             e.preventDefault();
@@ -69,7 +70,8 @@ function Form() {
           }}
         >
           &larr; Back
-        </Button>
+        </Button> */}
+        <BackButton />
       </div>
     </form>
   );

@@ -1,16 +1,14 @@
 import CountryItem from './CountryItem';
 import Message from './Message';
 import Spinner from './UI/Spinner';
-import { ICity, ICountry } from '../interface/city.interface';
+import { ICountry } from '../interface/city.interface';
 
 import styles from './country-list.module.css';
+import { useCitiesContext } from '../context/CitiesContext';
 
-interface ICountryListProps {
-  cities: ICity[];
-  isLoading: boolean;
-}
+function CountryList() {
+  const { isCitiesLoading, cities } = useCitiesContext();
 
-function CountryList({ cities, isLoading }: ICountryListProps) {
   // const countries: ICountry[] = [];
   // cities.forEach((city) => {
   //   if (!countries.map((country) => country.country).includes(city.country)) {
@@ -52,7 +50,7 @@ function CountryList({ cities, isLoading }: ICountryListProps) {
     return acc;
   }, []);
 
-  if (isLoading) return <Spinner />;
+  if (isCitiesLoading) return <Spinner />;
 
   if (!countries.length)
     return <Message message="Add your first city by clicking on the map" />;
