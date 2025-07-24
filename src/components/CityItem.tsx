@@ -3,7 +3,7 @@ import styles from './city-item.module.css';
 import { ICity } from '../interface/city.interface';
 import { formatDate } from '../utils/helper-methods.utils';
 import { Link } from 'react-router';
-import { useCitiesContext } from '../context/CitiesContext';
+import { useCities } from '../context/CitiesContext';
 
 interface ICityItemProps {
   city: ICity;
@@ -12,10 +12,12 @@ interface ICityItemProps {
 function CityItem({
   city: { cityName, emoji, date, id, position },
 }: ICityItemProps) {
-  const { currentCity } = useCitiesContext();
+  const { currentCity } = useCities();
 
-  console.log('id: ', id);
-  console.log('currentCity: ', currentCity);
+  if (currentCity?.id === id) {
+    console.log('id: ', id);
+    console.log('currentCity: ', currentCity);
+  }
 
   const isCityActive = currentCity?.id === id;
 

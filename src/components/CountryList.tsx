@@ -4,10 +4,10 @@ import Spinner from './UI/Spinner';
 import { ICountry } from '../interface/city.interface';
 
 import styles from './country-list.module.css';
-import { useCitiesContext } from '../context/CitiesContext';
+import { useCities } from '../context/CitiesContext';
 
 function CountryList() {
-  const { isCitiesLoading, cities } = useCitiesContext();
+  const { isCitiesLoading, cities } = useCities();
 
   // const countries: ICountry[] = [];
   // cities.forEach((city) => {

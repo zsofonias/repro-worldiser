@@ -75,7 +75,7 @@ function CitiesProvider({ children }: ICitiesProviderProps) {
   );
 }
 
-function useCitiesContext() {
+function useCities() {
   const context = useContext(CitiesContext);
   if (context === undefined) {
     throw new Error(
@@ -85,4 +85,4 @@ function useCitiesContext() {
   return context;
 }
 
-export { CitiesProvider, useCitiesContext };
+export { CitiesProvider, useCities };

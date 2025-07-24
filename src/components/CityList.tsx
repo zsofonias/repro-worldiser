@@ -3,10 +3,10 @@ import Spinner from './UI/Spinner';
 
 import CityItem from './CityItem';
 import Message from './Message';
-import { useCitiesContext } from '../context/CitiesContext';
+import { useCities } from '../context/CitiesContext';
 
 function CityList() {
-  const { isCitiesLoading, cities } = useCitiesContext();
+  const { isCitiesLoading, cities } = useCities();
 
   if (isCitiesLoading) return <Spinner />;
 

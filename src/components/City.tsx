@@ -7,7 +7,7 @@ import Spinner from './UI/Spinner';
 
 import { formatDate } from '../utils/helper-methods.utils';
 import Button from './UI/Button';
-import { useCitiesContext } from '../context/CitiesContext';
+import { useCities } from '../context/CitiesContext';
 import BackButton from './UI/BackButton';
 
 interface ICityRouteParams extends Record<string, string | undefined> {
@@ -16,6 +16,7 @@ interface ICityRouteParams extends Record<string, string | undefined> {
 
 function City() {
   const { cityId } = useParams<ICityRouteParams>();
+  const { getCity, currentCity, isCurrentCityLoading: isLoading } = useCities();
 
   if (!cityId) {
     return (
@@ -27,12 +28,6 @@ function City() {
       </div>
     );
   }
-
-  const {
-    getCity,
-    currentCity,
-    isCurrentCityLoading: isLoading,
-  } = useCitiesContext();
 
   useEffect(() => {
     getCity(cityId);
