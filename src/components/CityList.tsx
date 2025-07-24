@@ -6,9 +6,9 @@ import Message from './Message';
 import { useCities } from '../context/CitiesContext';
 
 function CityList() {
-  const { isCitiesLoading, cities } = useCities();
+  const { isLoading, cities } = useCities();
 
-  if (isCitiesLoading) return <Spinner />;
+  if (isLoading) return <Spinner />;
 
   if (!cities.length)
     return <Message message="Add your first city by clicking on the map" />;

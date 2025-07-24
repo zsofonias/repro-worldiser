@@ -12,14 +12,14 @@ interface ICityItemProps {
 function CityItem({
   city: { cityName, emoji, date, id, position },
 }: ICityItemProps) {
-  const { currentCity } = useCities();
-
-  if (currentCity?.id === id) {
-    console.log('id: ', id);
-    console.log('currentCity: ', currentCity);
-  }
+  const { currentCity, deleteCity } = useCities();
 
   const isCityActive = currentCity?.id === id;
+
+  function handleDelete(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    id && deleteCity(id);
+  }
 
   return (
     <li>
@@ -32,7 +32,9 @@ function CityItem({
         <span className={styles.emoji}>{emoji}</span>
         <h3 className={styles.name}>{cityName}</h3>
         <time className={styles.date}>({formatDate(date)})</time>
-        <button className={styles.deleteBtn}>&times;</button>
+        <button onClick={handleDelete} className={styles.deleteBtn}>
+          &times;
+        </button>
       </Link>
     </li>
   );

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link, useLocation, useParams, useSearchParams } from 'react-router';
+import { Link, useParams } from 'react-router';
 
 import styles from './city.module.css';
 
@@ -16,7 +16,7 @@ interface ICityRouteParams extends Record<string, string | undefined> {
 
 function City() {
   const { cityId } = useParams<ICityRouteParams>();
-  const { getCity, currentCity, isCurrentCityLoading: isLoading } = useCities();
+  const { getCity, currentCity, isLoading: isLoading } = useCities();
 
   if (!cityId) {
     return (
@@ -32,12 +32,6 @@ function City() {
   useEffect(() => {
     getCity(cityId);
   }, [cityId]);
-
-  // const [searchParams] = useSearchParams();
-  // console.log(searchParams.get('lat'), searchParams.get('lng'));
-
-  // const location = useLocation();
-  // console.log('location: ', location);
 
   if (!currentCity)
     return (

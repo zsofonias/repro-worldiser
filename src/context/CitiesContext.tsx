@@ -13,9 +13,10 @@ const CITIES_API_ENDPOINT = 'http://localhost:8000/cities';
 interface ICitiesContextValue {
   cities: ICity[];
   currentCity: ICity | undefined;
-  isCitiesLoading: boolean;
-  isCurrentCityLoading: boolean;
+  isLoading: boolean;
   getCity: (cityId: string) => void;
+  createCity: (newCity: ICity) => void;
+  deleteCity: (id: number) => void;
 }
 
 interface ICitiesProviderProps {
@@ -27,12 +28,11 @@ const CitiesContext = createContext<ICitiesContextValue | undefined>(undefined);
 function CitiesProvider({ children }: ICitiesProviderProps) {
   const [cities, setCities] = useState<ICity[]>([]);
   const [currentCity, setCurrentCity] = useState<ICity>();
-  const [isCitiesLoading, setIsCitiesLoading] = useState(false);
-  const [isCurrentCityLoading, setIsCurrentCityLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchCities = () => {
-      setIsCitiesLoading(true);
+      setIsLoading(true);
       fetch(CITIES_API_ENDPOINT)
         .then((response) => response.json())
         .then((data: ICity[]) => {
@@ -40,7 +40,7 @@ function CitiesProvider({ children }: ICitiesProviderProps) {
         })
         .catch((err) => console.log(err))
         .finally(() => {
-          setIsCitiesLoading(false);
+          setIsLoading(false);
         });
     };
 
@@ -48,15 +48,51 @@ function CitiesProvider({ children }: ICitiesProviderProps) {
   }, []);
 
   async function getCity(cityId: string) {
-    setIsCurrentCityLoading(true);
+    setIsLoading(true);
     try {
       const response = await fetch(`${CITIES_API_ENDPOINT}/${cityId}`);
       const data: ICity = await response.json();
       setCurrentCity(data);
     } catch (err) {
       console.log(err);
+      alert('Failed to get city');
     } finally {
-      setIsCurrentCityLoading(false);
+      setIsLoading(false);
+    }
+  }
+
+  async function createCity(newCity: ICity) {
+    setIsLoading(true);
+    try {
+      const response = await fetch(CITIES_API_ENDPOINT, {
+        method: 'POST',
+        body: JSON.stringify(newCity),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data: ICity = await response.json();
+      setCities((prevCities) => [...prevCities, data]);
+    } catch (err) {
+      console.log(err);
+      alert('Failed to create city');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function deleteCity(id: number) {
+    setIsLoading(true);
+    try {
+      await fetch(`${CITIES_API_ENDPOINT}/${id}`, {
+        method: 'DELETE',
+      });
+      setCities((prevCities) => prevCities.filter((city) => city.id !== id));
+    } catch (err) {
+      console.log(err);
+      alert('Failed to delete city');
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -65,9 +101,10 @@ function CitiesProvider({ children }: ICitiesProviderProps) {
       value={{
         cities,
         currentCity,
-        isCitiesLoading,
-        isCurrentCityLoading,
+        isLoading,
         getCity,
+        createCity,
+        deleteCity,
       }}
     >
       {children}
