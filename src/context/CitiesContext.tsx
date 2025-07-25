@@ -159,7 +159,7 @@ function CitiesProvider({ children }: PropsWithChildren) {
   }, []);
 
   async function getCity(cityId: string) {
-    if (Number(currentCity?.id) === Number(cityId)) return;
+    if (String(currentCity?.id) === cityId) return;
     dispatch({ type: ActionType.SET_LOADING, payload: true });
     try {
       const response = await fetch(`${CITIES_API_ENDPOINT}/${cityId}`);
@@ -229,9 +229,7 @@ function CitiesProvider({ children }: PropsWithChildren) {
 function useCities() {
   const context = useContext(CitiesContext);
   if (context === undefined) {
-    throw new Error(
-      'use CitiesContext should only be used with in CitiesProvider'
-    );
+    throw new Error('useCities should only be used with in CitiesProvider');
   }
   return context;
 }

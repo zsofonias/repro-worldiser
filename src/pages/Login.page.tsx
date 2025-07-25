@@ -1,25 +1,42 @@
-import { FormEvent, useRef, useState } from 'react';
-import PageNav from '../components/PageNav';
+import { FormEvent, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router';
+
 import styles from './login.module.css';
 
+import { useAuth } from '../context/AuthContext';
+
+import PageNav from '../components/PageNav';
+import Button from '../components/UI/Button';
+import Message from '../components/Message';
+
 function Login() {
-  // PRE-FILL FOR DEV PURPOSES
-  // const [email, setEmail] = useState('jack@example.com');
-  // const [password, setPassword] = useState('qwerty');
+  const navigate = useNavigate();
   const [viewPassword, setViewPassword] = useState(false);
+
+  const { login, isAuthenticated, error } = useAuth();
 
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/app', {
+        replace: true,
+      });
+    }
+  }, [isAuthenticated, navigate]);
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log(e);
 
-    const email = emailRef.current!.value;
-    const password = passwordRef.current!.value;
+    const email = emailRef.current?.value;
+    const password = passwordRef.current?.value;
 
-    console.log(email, password);
-    e.currentTarget.reset();
+    if (!email || !password) {
+      return alert('Please enter email and password');
+    }
+
+    login(email, password);
   }
 
   function handleToggleViewPassword() {
@@ -29,16 +46,11 @@ function Login() {
   return (
     <main className={styles.login}>
       <PageNav />
+      {error && <Message message={error} />}
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.row}>
           <label htmlFor="email">Email address</label>
-          <input
-            type="email"
-            id="email"
-            // onChange={(e) => setEmail(e.target.value)}
-            // value={email}
-            ref={emailRef}
-          />
+          <input type="email" id="email" ref={emailRef} />
         </div>
 
         <div className={styles.row}>
@@ -46,8 +58,6 @@ function Login() {
           <input
             type={viewPassword ? 'text' : 'password'}
             id="password"
-            // onChange={(e) => setPassword(e.target.value)}
-            // value={password}
             ref={passwordRef}
           />
         </div>
@@ -57,7 +67,7 @@ function Login() {
         </button>
 
         <div>
-          <button type="submit">Login</button>
+          <Button type="primary">Login</Button>
         </div>
       </form>
     </main>
