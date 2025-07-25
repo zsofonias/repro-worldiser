@@ -1,9 +1,4 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router';
-
 import styles from './app-layout.module.css';
-
-import { useAuth } from '../context/AuthContext';
 
 import Map from '../components/Map';
 import Sidebar from '../components/Sidebar';

@@ -7,7 +7,7 @@ import styles from './country-list.module.css';
 import { useCities } from '../context/CitiesContext';
 
 function CountryList() {
-  const { isCitiesLoading, cities } = useCities();
+  const { isLoading, cities } = useCities();
 
   // const countries: ICountry[] = [];
   // cities.forEach((city) => {
@@ -50,7 +50,7 @@ function CountryList() {
     return acc;
   }, []);
 
-  if (isCitiesLoading) return <Spinner />;
+  if (isLoading) return <Spinner />;
 
   if (!countries.length)
     return <Message message="Add your first city by clicking on the map" />;

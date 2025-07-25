@@ -90,11 +90,13 @@ function AuthProvider({ children }: PropsWithChildren) {
   );
 
   function login(email: string, password: string) {
-    if (email === FAKE_USER.email && password === FAKE_USER.password) {
-      dispatch({ type: ActionType.LOGIN, payload: FAKE_USER });
-    } else {
-      dispatch({ type: ActionType.ERROR, payload: 'Invalid credentials' });
+    if (email !== FAKE_USER.email || password !== FAKE_USER.password) {
+      return dispatch({
+        type: ActionType.ERROR,
+        payload: 'Invalid credentials',
+      });
     }
+    dispatch({ type: ActionType.LOGIN, payload: FAKE_USER });
   }
 
   function logout() {

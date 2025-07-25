@@ -31,7 +31,7 @@ function City() {
 
   useEffect(() => {
     getCity(cityId);
-  }, [cityId]);
+  }, [cityId, getCity]);
 
   if (!currentCity)
     return (

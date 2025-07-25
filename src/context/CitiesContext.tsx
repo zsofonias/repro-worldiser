@@ -1,6 +1,7 @@
 import {
   createContext,
   PropsWithChildren,
+  useCallback,
   useContext,
   useEffect,
   useReducer,
@@ -158,19 +159,25 @@ function CitiesProvider({ children }: PropsWithChildren) {
     fetchCities();
   }, []);
 
-  async function getCity(cityId: string) {
-    if (String(currentCity?.id) === cityId) return;
-    dispatch({ type: ActionType.SET_LOADING, payload: true });
-    try {
-      const response = await fetch(`${CITIES_API_ENDPOINT}/${cityId}`);
-      const data: ICity = await response.json();
-      console.log(data);
-      dispatch({ type: ActionType.CITY_LOADED, payload: data });
-    } catch (err) {
-      console.log(err);
-      dispatch({ type: ActionType.SET_ERROR, payload: 'Failed to load city' });
-    }
-  }
+  const getCity = useCallback(
+    async function getCity(cityId: string) {
+      if (String(currentCity?.id) === cityId) return;
+      dispatch({ type: ActionType.SET_LOADING, payload: true });
+      try {
+        const response = await fetch(`${CITIES_API_ENDPOINT}/${cityId}`);
+        const data: ICity = await response.json();
+        console.log(data);
+        dispatch({ type: ActionType.CITY_LOADED, payload: data });
+      } catch (err) {
+        console.log(err);
+        dispatch({
+          type: ActionType.SET_ERROR,
+          payload: 'Failed to load city',
+        });
+      }
+    },
+    [currentCity?.id]
+  );
 
   async function createCity(newCity: ICity) {
     dispatch({ type: ActionType.SET_LOADING, payload: true });
